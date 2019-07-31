@@ -21,7 +21,6 @@ import (
 	"os"
 	"path"
 	"strings"
-	"time"
 
 	"emperror.dev/emperror"
 	"emperror.dev/errors"
@@ -415,7 +414,7 @@ func main() {
 	scmFactory, err := scm.NewSCMFactory(scmProvider, scmToken)
 	emperror.Panic(errors.WrapIf(err, "failed to create SCMFactory"))
 
-	sharedSpotguideOrg, err := spotguide.CreateSharedSpotguideOrganization(config.DB(), scmProvider, viper.GetString(config.SpotguideSharedLibraryGitHubOrganization))
+	sharedSpotguideOrg, err := spotguide.EnsureSharedSpotguideOrganization(config.DB(), scmProvider, viper.GetString(config.SpotguideSharedLibraryGitHubOrganization))
 	if err != nil {
 		log.Errorf("failed to create shared Spotguide organization: %s", err)
 	}
@@ -437,6 +436,7 @@ func main() {
 		scmFactory,
 		sharedSpotguideOrg,
 		spotguidePlatformData,
+		workflowClient,
 	)
 
 	// subscribe to organization creations and sync spotguides into the newly created organizations
@@ -447,18 +447,9 @@ func main() {
 	})
 
 	// periodically sync shared spotguides
-	syncTicker := time.NewTicker(viper.GetDuration(config.SpotguideSyncInterval))
-	go func() {
-		if err := spotguideManager.ScrapeSharedSpotguides(); err != nil {
-			log.Errorf("failed to sync shared spotguides: %v", err)
-		}
-
-		for range syncTicker.C {
-			if err := spotguideManager.ScrapeSharedSpotguides(); err != nil {
-				log.Errorf("failed to sync shared spotguides: %v", err)
-			}
-		}
-	}()
+	if err := spotguideManager.ScheduleScrapingSharedSpotguides(); err != nil {
+		log.Errorf("failed to schedule syncing shared spotguides: %v", err)
+	}
 
 	spotguideAPI := api.NewSpotguideAPI(logger, errorHandler, spotguideManager)
 
