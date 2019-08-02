@@ -303,7 +303,7 @@ func (m *FederationReconciler) installFederationController(c cluster.CommonClust
 	}
 
 	env := helm.GenerateHelmRepoEnv(org.Name)
-	_, err = helm.ReposAdd(env, &repo.Entry{
+	_, err = helm.AddRepo(env, &repo.Entry{
 		Name: "kubefed-charts",
 		URL:  "https://raw.githubusercontent.com/banzaicloud/kubefed/helm_chart/charts",
 	})
