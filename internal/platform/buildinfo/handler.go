@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/banzaicloud/pipeline/internal/global"
 	"github.com/pkg/errors"
 )
 
@@ -29,7 +30,12 @@ func Handler(buildInfo BuildInfo) http.Handler {
 		if body == nil {
 			var err error
 
-			body, err = json.Marshal(buildInfo)
+			data := struct {
+				BuildInfo
+				InstanceUUID string
+			}{BuildInfo: buildInfo, InstanceUUID: global.PipelineUUID()}
+
+			body, err = json.Marshal(data)
 			if err != nil {
 				panic(errors.Wrap(err, "failed to render version information"))
 			}
