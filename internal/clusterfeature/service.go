@@ -173,18 +173,18 @@ func (s *FeatureService) Activate(ctx context.Context, clusterID uint, featureNa
 	logger := s.logger.WithContext(ctx).WithFields(map[string]interface{}{"clusterId": clusterID, "feature": featureName})
 	logger.Info("activating feature")
 
-	_, err := s.featureRepository.GetFeature(ctx, clusterID, featureName)
+	feature, err := s.featureRepository.GetFeature(ctx, clusterID, featureName)
 	if err != nil {
 		return nil
 	}
 
-	//if feature != nil {
-	//	logger.Debug("feature cannot be activated: it's not inactive", map[string]interface{}{
-	//		"status": feature.Status,
-	//	})
-	//
-	//	return FeatureAlreadyActivatedError{FeatureName: featureName}
-	//}
+	if feature != nil {
+		logger.Debug("feature cannot be activated: it's not inactive", map[string]interface{}{
+			"status": feature.Status,
+		})
+
+		return FeatureAlreadyActivatedError{FeatureName: featureName}
+	}
 
 	featureManager, err := s.featureRegistry.GetFeatureManager(featureName)
 	if err != nil {
