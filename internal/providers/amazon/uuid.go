@@ -25,7 +25,7 @@ func PipelineTags() []*cloudformation.Tag {
 	value := global.PipelineUUID()
 
 	return []*cloudformation.Tag{
-		&cloudformation.Tag{
+		{
 			Key:   aws.String(global.ManagedByPipelineTag),
 			Value: aws.String(value),
 		},
