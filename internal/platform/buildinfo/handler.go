@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/banzaicloud/pipeline/client"
 	"github.com/banzaicloud/pipeline/internal/global"
 	"github.com/pkg/errors"
 )
@@ -30,10 +31,16 @@ func Handler(buildInfo BuildInfo) http.Handler {
 		if body == nil {
 			var err error
 
-			data := struct {
-				BuildInfo
-				InstanceUUID string
-			}{BuildInfo: buildInfo, InstanceUUID: global.PipelineUUID()}
+			data := client.VersionResponse{
+				Version:      buildInfo.Version,
+				CommitHash:   buildInfo.CommitHash,
+				BuildDate:    buildInfo.BuildDate,
+				GoVersion:    buildInfo.GoVersion,
+				Os:           buildInfo.Os,
+				Arch:         buildInfo.Arch,
+				Compiler:     buildInfo.Compiler,
+				InstanceUuid: global.PipelineUUID(),
+			}
 
 			body, err = json.Marshal(data)
 			if err != nil {
