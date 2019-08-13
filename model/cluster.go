@@ -35,17 +35,19 @@ const unknown = "unknown"
 
 // TableName constants
 const (
-	tableNameClusters             = "clusters"
-	tableNameAlibabaProperties    = "alibaba_acsk_clusters"
-	tableNameAlibabaNodePools     = "alibaba_acsk_node_pools"
-	tableNameAmazonNodePools      = "amazon_node_pools"
-	tableNameAmazonEksProperties  = "amazon_eks_clusters"
-	tableNameAzureProperties      = "azure_aks_clusters"
-	tableNameAzureNodePools       = "azure_aks_node_pools"
-	tableNameDummyProperties      = "dummy_clusters"
-	tableNameKubernetesProperties = "kubernetes_clusters"
-	tableNameEKSSubnets           = "amazon_eks_subnets"
-	tableNameAmazonNodePoolLabels = "amazon_node_pool_labels"
+	tableNameClusters               = "clusters"
+	tableNameAlibabaProperties      = "alibaba_acsk_clusters"
+	tableNameAlibabaNodePools       = "alibaba_acsk_node_pools"
+	tableNameAmazonNodePools        = "amazon_node_pools"
+	tableNameAmazonEksProperties    = "amazon_eks_clusters"
+	tableNameAzureProperties        = "azure_aks_clusters"
+	tableNameAzureNodePools         = "azure_aks_node_pools"
+	tableNameDummyProperties        = "dummy_clusters"
+	tableNameDigitalOceanProperties = "digitalocean_clusters"
+	tableNameDigitalOceanNodePools  = "digitalocean_node_pools"
+	tableNameKubernetesProperties   = "kubernetes_clusters"
+	tableNameEKSSubnets             = "amazon_eks_subnets"
+	tableNameAmazonNodePoolLabels   = "amazon_node_pool_labels"
 )
 
 // ClusterModel describes the common cluster model
@@ -77,6 +79,7 @@ type ClusterModel struct {
 	AKS            AKSClusterModel        `gorm:"foreignkey:ID"`
 	EKS            EKSClusterModel        `gorm:"foreignkey:ClusterID"`
 	Dummy          DummyClusterModel      `gorm:"foreignkey:ID"`
+	DOK            DOKClusterModel        `gorm:"foreignkey:ID"`
 	Kubernetes     KubernetesClusterModel `gorm:"foreignkey:ID"`
 	OKE            modelOracle.Cluster
 	CreatedBy      uint
@@ -221,6 +224,33 @@ type DummyClusterModel struct {
 	NodeCount         int
 }
 
+// DOKNodePoolModel describes DOK node pools model of a cluster
+type DOKNodePoolModel struct {
+	ID           uint `gorm:"primary_key"`
+	CreatedAt    time.Time
+	CreatedBy    uint
+	ClusterID    uint   `gorm:"unique_index:idx_dok_node_pools_cluster_id_name"`
+	Name         string `gorm:"unique_index:idx_dok_node_pools_cluster_id_name"`
+	Count        int
+	InstanceType string // in DOK: size
+	/* TODO @pgillich
+	Tags         []string `gorm:"-"`
+	*/
+}
+
+// DOKClusterModel describes the dummy cluster model
+type DOKClusterModel struct {
+	ID                uint `gorm:"primary_key"`
+	Region            string
+	KubernetesVersion string
+	/* TODO @pgillich
+	AutoUpgrade bool
+	Tags []string
+	MaintenancePolicy MaintenancePolicy
+	*/
+	NodePools []*DOKNodePoolModel `gorm:"foreignkey:ClusterID"`
+}
+
 // KubernetesClusterModel describes the build your own cluster model
 type KubernetesClusterModel struct {
 	ID          uint              `gorm:"primary_key"`
@@ -330,6 +360,10 @@ func (cs *ClusterModel) String() string {
 		buffer.WriteString(fmt.Sprintf("Node count: %d, kubernetes version: %s",
 			cs.Dummy.NodeCount,
 			cs.Dummy.KubernetesVersion))
+	case pkgCluster.DOK:
+		buffer.WriteString(fmt.Sprintf("NodePools: %v, Kubernetes version: %s",
+			cs.DOK.NodePools,
+			cs.DOK.KubernetesVersion))
 	case pkgCluster.Kubernetes:
 		buffer.WriteString(fmt.Sprintf("Metadata: %#v", cs.Kubernetes.Metadata))
 	}
@@ -375,6 +409,16 @@ func (AKSNodePoolModel) TableName() string {
 // TableName sets the DummyClusterModel's table name
 func (DummyClusterModel) TableName() string {
 	return tableNameDummyProperties
+}
+
+// TableName sets the DOKClusterModel's table name
+func (DOKClusterModel) TableName() string {
+	return tableNameDigitalOceanProperties
+}
+
+// TableName sets the DOKClusterModel's table name
+func (DOKNodePoolModel) TableName() string {
+	return tableNameDigitalOceanNodePools
 }
 
 // TableName sets the KubernetesClusterModel's table name

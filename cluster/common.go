@@ -276,6 +276,7 @@ func GetCommonClusterFromModel(modelCluster *model.ClusterModel) (CommonCluster,
 		return createCommonClusterWithDistributionFromModel(modelCluster)
 	}
 
+	// TODO @pgillich refactor to Factory pattern with automatic registration from pkg init()
 	switch modelCluster.Cloud {
 	case pkgCluster.Alibaba:
 		// Create Alibaba struct
@@ -363,6 +364,23 @@ func GetCommonClusterFromModel(modelCluster *model.ClusterModel) (CommonCluster,
 		err = db.Where(modelOracle.Cluster{ClusterModelID: okeCluster.modelCluster.ID}).Preload("NodePools.Subnets").First(&okeCluster.modelCluster.OKE).Error
 
 		return okeCluster, err
+
+	case pkgCluster.DigitalOcean:
+		// Create DigitalOcean struct
+		dokCluster, err := CreateGKEClusterFromModel(modelCluster)
+		if err != nil {
+			return nil, err
+		}
+
+		// TODO @pgillich register NodePools
+		/*
+			err := db.Preload("NodePools").
+				Where(model.DOKClusterModel{ID: adokCluster.modelCluster.ID}).First(&dokCluster.modelCluster.DOK).Error
+
+		*/
+
+		return dokCluster, err
+
 	}
 
 	return nil, pkgErrors.ErrorNotSupportedCloudType

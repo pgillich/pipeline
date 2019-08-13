@@ -21,6 +21,7 @@ import (
 
 	"github.com/banzaicloud/pipeline/pkg/cluster/ack"
 	"github.com/banzaicloud/pipeline/pkg/cluster/aks"
+	"github.com/banzaicloud/pipeline/pkg/cluster/dok"
 	"github.com/banzaicloud/pipeline/pkg/cluster/dummy"
 	"github.com/banzaicloud/pipeline/pkg/cluster/eks"
 	"github.com/banzaicloud/pipeline/pkg/cluster/gke"
@@ -49,13 +50,14 @@ const (
 
 // Cloud constants
 const (
-	Alibaba    = "alibaba"
-	Amazon     = "amazon"
-	Azure      = "azure"
-	Google     = "google"
-	Dummy      = "dummy"
-	Kubernetes = "kubernetes"
-	Oracle     = "oracle"
+	Alibaba      = "alibaba"
+	Amazon       = "amazon"
+	Azure        = "azure"
+	Google       = "google"
+	Dummy        = "dummy"
+	Kubernetes   = "kubernetes"
+	Oracle       = "oracle"
+	DigitalOcean = "digitalocean"
 )
 
 // Distribution constants
@@ -66,6 +68,7 @@ const (
 	GKE     = "gke"
 	OKE     = "oke"
 	PKE     = "pke"
+	DOK     = "dok"
 	Unknown = "unknown"
 )
 
@@ -136,6 +139,7 @@ type CreateClusterProperties struct {
 	CreateClusterAKS        *aks.CreateClusterAKS               `json:"aks,omitempty" yaml:"aks,omitempty"`
 	CreateClusterGKE        *gke.CreateClusterGKE               `json:"gke,omitempty" yaml:"gke,omitempty"`
 	CreateClusterDummy      *dummy.CreateClusterDummy           `json:"dummy,omitempty" yaml:"dummy,omitempty"`
+	CreateClusterDOK        *dok.CreateClusterDOK               `json:"dok,omitempty" yaml:"dok,omitempty"`
 	CreateClusterKubernetes *kubernetes.CreateClusterKubernetes `json:"kubernetes,omitempty" yaml:"kubernetes,omitempty"`
 	CreateClusterOKE        *oke.Cluster                        `json:"oke,omitempty" yaml:"oke,omitempty"`
 	CreateClusterPKE        *pke.CreateClusterPKE               `json:"pke,omitempty" yaml:"pke,omitempty"`
