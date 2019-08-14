@@ -107,6 +107,7 @@ const (
 )
 
 // ### [ Keywords ] ###
+// TODO @pgillich Not used, should be removed
 const (
 	KeyWordLocation          = "location"
 	KeyWordInstanceType      = "instanceType"
@@ -115,6 +116,7 @@ const (
 )
 
 // CreateClusterRequest describes a create cluster request
+// TODO @pgillich clarify Location <--> Region, GetClusterStatusResponse.Region has!
 type CreateClusterRequest struct {
 	Name         string                   `json:"name" yaml:"name" binding:"required"`
 	Location     string                   `json:"location" yaml:"location"`

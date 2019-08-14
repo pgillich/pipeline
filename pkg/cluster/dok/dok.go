@@ -19,6 +19,7 @@ https://developers.digitalocean.com/documentation/v2/#create-a-new-kubernetes-cl
 */
 
 // CreateClusterDigitalOcean describes Pipeline's DigitalOcean fields of a CreateCluster request
+// TODO @pgillich clarify Location <--> Region, GetClusterStatusResponse.Region has!
 type CreateClusterDOK struct {
 	// TODO @pgillich Name is auto-generated?
 	// Name                 string `json:"name" yaml:"name"`

@@ -23,4 +23,6 @@ type CreateClusterRequest struct {
 	PostHooks   map[string]interface{} `json:"postHooks,omitempty"`
 	ProfileName string                 `json:"profileName,omitempty"`
 	Properties  map[string]interface{} `json:"properties"`
+	// TODO @pgillich pkg/cluster/base.go:CreateClusterRequest has ScaleOptions; May be used it at all?
+	// ScaleOptions *ScaleOptions            `json:"scaleOptions,omitempty" yaml:"scaleOptions,omitempty"`
 }
