@@ -130,7 +130,7 @@ func (c *DigitalOceanCluster) UpdateNodePools(request *pkgCluster.UpdateNodePool
 
 // UpdateCluster updates the dummy cluster
 func (c *DigitalOceanCluster) UpdateCluster(r *pkgCluster.UpdateClusterRequest, _ uint) error {
-	// TODO implement
+	// TODO @pgillich implement
 
 	return nil
 }

@@ -20,11 +20,11 @@ https://developers.digitalocean.com/documentation/v2/#create-a-new-kubernetes-cl
 
 // CreateClusterDigitalOcean describes Pipeline's DigitalOcean fields of a CreateCluster request
 type CreateClusterDOK struct {
-	// TODO Name is auto-generated?
+	// TODO @pgillich Name is auto-generated?
 	// Name                 string `json:"name" yaml:"name"`
 	Region  string `json:"region" yaml:"region"`
 	Version string `json:"version" yaml:"version"`
-	/* TODO
+	/* TODO @pgillich optional fields
 	AutoUpgrade bool   `json:"auto_upgrade,omitempty" yaml:"auto_upgrade,omitempty"`
 	Tags []string `json:"tags,omitempty" yaml:"tags,omitempty"`
 	MaintenancePolicy MaintenancePolicy `json:"maintenance_policy,omitempty" yaml:"maintenance_policy,omitempty"`
@@ -34,15 +34,16 @@ type CreateClusterDOK struct {
 
 // NodePoolCreate describes Azure's node fields of a CreateCluster request
 type NodePoolCreate struct {
+	// TODO @pgillich decide field names InstanceType <--> size
 	InstanceType string `json:"size" yaml:"size"`
 	Count        int    `json:"count" yaml:"count"`
-	// TODO ORM string list
+	// TODO @pgillich optional fields
 	// Tags []string `json:"tags,omitempty" yaml:"tags,omitempty"`
 }
 
 // Validate validates cluster create request
 func (d *CreateClusterDOK) Validate() error {
-	// TODO implement
+	// TODO @pgillich implement
 
 	return nil
 }
@@ -50,7 +51,7 @@ func (d *CreateClusterDOK) Validate() error {
 /*
 // Validate validates the update request
 func (r *UpdateClusterDOK) Validate() error {
-	// TODO implement
+	// TODO @pgillich implement
 
 	return nil
 }
